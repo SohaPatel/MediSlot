@@ -1,3 +1,4 @@
+
 package com.medislot.backend.repository;
 
 import com.medislot.backend.model.Patient;
@@ -22,6 +23,10 @@ public class PatientRepository {
         patient.setId(id);
         patients.put(id, patient);
         return patient;
+    }
+
+    public Optional<Patient> findById(Long id) {
+        return Optional.ofNullable(patients.get(id));
     }
 
     public Optional<Patient> findByEmail(String email) {
