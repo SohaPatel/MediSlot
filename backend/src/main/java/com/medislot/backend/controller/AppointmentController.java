@@ -21,7 +21,8 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-    public AppointmentController(AppointmentService appointmentService) {
+    public AppointmentController(
+            AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
@@ -65,5 +66,24 @@ public class AppointmentController {
         return ResponseEntity.ok(
                 appointmentService.getAppointmentsByPatient(patientId)
         );
+    }
+
+    // Cancel an appointment
+    @PatchMapping("/{appointmentId}/cancel")
+    public ResponseEntity<?> cancelAppointment(
+            @PathVariable Long appointmentId) {
+
+        try {
+            Appointment appointment =
+                    appointmentService.cancelAppointment(appointmentId);
+
+            return ResponseEntity.ok(appointment);
+
+        } catch (IllegalArgumentException |
+                 IllegalStateException exception) {
+
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", exception.getMessage()));
+        }
     }
 }
