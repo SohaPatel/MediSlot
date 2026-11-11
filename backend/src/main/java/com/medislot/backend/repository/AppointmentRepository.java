@@ -47,8 +47,29 @@ public class AppointmentRepository {
         return appointment;
     }
 
+    public synchronized Appointment update(Appointment appointment) {
+
+        if (appointment == null || appointment.getId() == null) {
+            throw new IllegalArgumentException(
+                    "Appointment and appointment ID are required."
+            );
+        }
+
+        if (!appointments.containsKey(appointment.getId())) {
+            throw new IllegalArgumentException(
+                    "Appointment not found."
+            );
+        }
+
+        appointments.put(appointment.getId(), appointment);
+
+        return appointment;
+    }
+
     public List<Appointment> findAll() {
-        List<Appointment> result = new ArrayList<>(appointments.values());
+
+        List<Appointment> result =
+                new ArrayList<>(appointments.values());
 
         result.sort(Comparator.comparing(Appointment::getAppointmentDate)
                 .thenComparing(Appointment::getAppointmentTime));
@@ -61,6 +82,7 @@ public class AppointmentRepository {
     }
 
     public List<Appointment> findByPatientId(Long patientId) {
+
         return appointments.values()
                 .stream()
                 .filter(a -> a.getPatientId().equals(patientId))
@@ -68,6 +90,7 @@ public class AppointmentRepository {
     }
 
     public List<Appointment> findByDate(LocalDate date) {
+
         return appointments.values()
                 .stream()
                 .filter(a -> a.getAppointmentDate().equals(date))
