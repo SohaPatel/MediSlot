@@ -159,6 +159,38 @@ public class AppointmentService {
         );
     }
 
+    // Cancel an existing appointment
+    public Appointment cancelAppointment(Long appointmentId) {
+
+        if (appointmentId == null) {
+            throw new IllegalArgumentException(
+                    "Appointment ID is required."
+            );
+        }
+
+        Appointment appointment = appointmentRepository
+                .findById(appointmentId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Appointment not found."
+                ));
+
+        if ("CANCELLED".equalsIgnoreCase(appointment.getStatus())) {
+            throw new IllegalStateException(
+                    "This appointment has already been cancelled."
+            );
+        }
+
+        if (!"CONFIRMED".equalsIgnoreCase(appointment.getStatus())) {
+            throw new IllegalStateException(
+                    "Only confirmed appointments can be cancelled."
+            );
+        }
+
+        appointment.setStatus("CANCELLED");
+
+        return appointmentRepository.update(appointment);
+    }
+
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
