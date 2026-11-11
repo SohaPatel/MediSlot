@@ -3,24 +3,35 @@ import { useState } from 'react';
 import './App.css';
 import PatientRegistration from './PatientRegistration';
 import AppointmentBooking from './AppointmentBooking';
+import PatientAppointments from './PatientAppointments';
 
 function App() {
   const [showRegistration, setShowRegistration] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  const [showAppointments, setShowAppointments] = useState(false);
 
   const showHome = () => {
     setShowRegistration(false);
     setShowBooking(false);
+    setShowAppointments(false);
   };
 
   const openRegistration = () => {
     setShowRegistration(true);
     setShowBooking(false);
+    setShowAppointments(false);
   };
 
   const openBooking = () => {
     setShowBooking(true);
     setShowRegistration(false);
+    setShowAppointments(false);
+  };
+
+  const openAppointments = () => {
+    setShowAppointments(true);
+    setShowRegistration(false);
+    setShowBooking(false);
   };
 
   return (
@@ -42,6 +53,9 @@ function App() {
           <a href="#features" onClick={showHome}>Features</a>
           <a href="#how-it-works" onClick={showHome}>How It Works</a>
           <a href="#booking" onClick={openBooking}>Book Appointment</a>
+          <a href="#appointments" onClick={openAppointments}>
+            My Appointments
+          </a>
         </div>
 
         <div className="nav-buttons">
@@ -63,12 +77,21 @@ function App() {
 
       {/* Patient Registration */}
       {showRegistration ? (
+
         <PatientRegistration />
+
       ) : showBooking ? (
 
         /* Appointment Booking */
         <div id="booking">
           <AppointmentBooking patientId={1} />
+        </div>
+
+      ) : showAppointments ? (
+
+        /* Patient Appointment History */
+        <div id="appointments">
+          <PatientAppointments patientId={1} />
         </div>
 
       ) : (
@@ -168,9 +191,7 @@ function App() {
 
             <div className="section-heading">
               <span>OUR FEATURES</span>
-
               <h2>Everything You Need in One Place</h2>
-
               <p>
                 A smarter way to manage your healthcare appointments.
               </p>
