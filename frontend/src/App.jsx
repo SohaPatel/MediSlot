@@ -1,40 +1,81 @@
+
 import { useState } from 'react';
 import './App.css';
 import PatientRegistration from './PatientRegistration';
+import AppointmentBooking from './AppointmentBooking';
 
 function App() {
   const [showRegistration, setShowRegistration] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
+
+  const showHome = () => {
+    setShowRegistration(false);
+    setShowBooking(false);
+  };
+
+  const openRegistration = () => {
+    setShowRegistration(true);
+    setShowBooking(false);
+  };
+
+  const openBooking = () => {
+    setShowBooking(true);
+    setShowRegistration(false);
+  };
 
   return (
     <div className="app">
 
       {/* Navigation */}
       <nav className="navbar">
-        <div className="logo" onClick={() => setShowRegistration(false)} style={{ cursor: 'pointer' }}>
+        <div
+          className="logo"
+          onClick={showHome}
+          style={{ cursor: 'pointer' }}
+        >
           <span className="logo-icon">✚</span>
           MediSlot
         </div>
 
         <div className="nav-links">
-          <a href="#home" onClick={() => setShowRegistration(false)}>Home</a>
-          <a href="#features" onClick={() => setShowRegistration(false)}>Features</a>
-          <a href="#how-it-works" onClick={() => setShowRegistration(false)}>How It Works</a>
+          <a href="#home" onClick={showHome}>Home</a>
+          <a href="#features" onClick={showHome}>Features</a>
+          <a href="#how-it-works" onClick={showHome}>How It Works</a>
+          <a href="#booking" onClick={openBooking}>Book Appointment</a>
         </div>
 
         <div className="nav-buttons">
-          <button className="login-btn" onClick={() => setShowRegistration(true)}>
+          <button
+            className="login-btn"
+            onClick={openRegistration}
+          >
             Login
           </button>
-          <button className="signup-btn" onClick={() => setShowRegistration(true)}>
+
+          <button
+            className="signup-btn"
+            onClick={openRegistration}
+          >
             Sign Up
           </button>
         </div>
       </nav>
 
+      {/* Patient Registration */}
       {showRegistration ? (
         <PatientRegistration />
+      ) : showBooking ? (
+
+        /* Appointment Booking */
+        <div id="booking">
+          <AppointmentBooking patientId={1} />
+        </div>
+
       ) : (
+
+        /* Homepage */
         <>
+
           {/* Hero Section */}
           <section className="hero" id="home">
 
@@ -55,11 +96,21 @@ function App() {
               </p>
 
               <div className="hero-buttons">
-                <button className="primary-btn" onClick={() => setShowRegistration(true)}>
+                <button
+                  className="primary-btn"
+                  onClick={openBooking}
+                >
                   Book an Appointment →
                 </button>
 
-                <button className="secondary-btn" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
+                <button
+                  className="secondary-btn"
+                  onClick={() =>
+                    document.getElementById('features')?.scrollIntoView({
+                      behavior: 'smooth'
+                    })
+                  }
+                >
                   Explore Services
                 </button>
               </div>
@@ -85,7 +136,9 @@ function App() {
             <div className="hero-visual">
               <div className="medical-card">
                 <div className="medical-icon">✚</div>
+
                 <h2>Your Health Matters</h2>
+
                 <p>
                   Find the right doctor and schedule
                   your appointment with ease.
@@ -112,9 +165,12 @@ function App() {
 
           {/* Features Section */}
           <section className="features" id="features">
+
             <div className="section-heading">
               <span>OUR FEATURES</span>
+
               <h2>Everything You Need in One Place</h2>
+
               <p>
                 A smarter way to manage your healthcare appointments.
               </p>
@@ -163,6 +219,7 @@ function App() {
 
           {/* How It Works */}
           <section className="how-it-works" id="how-it-works">
+
             <div className="section-heading">
               <span>SIMPLE PROCESS</span>
               <h2>How MediSlot Works</h2>
@@ -193,6 +250,7 @@ function App() {
 
           {/* Footer */}
           <footer className="footer">
+
             <div className="logo">
               <span className="logo-icon">✚</span>
               MediSlot
@@ -205,7 +263,9 @@ function App() {
             <p className="copyright">
               © 2026 MediSlot. All rights reserved.
             </p>
+
           </footer>
+
         </>
       )}
 

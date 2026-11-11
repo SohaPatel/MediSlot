@@ -1,0 +1,145 @@
+
+.booking-section {
+  min-height: 650px;
+  padding: 70px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f2f7fc;
+}
+
+.booking-card {
+  width: 100%;
+  max-width: 550px;
+  padding: 45px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(24, 67, 100, 0.10);
+}
+
+.booking-tag {
+  display: inline-block;
+  color: #078394;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.booking-card h2 {
+  color: #173d5c;
+  font-size: 30px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.booking-description {
+  color: #718096;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.booking-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.booking-card label {
+  color: #24445e;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.booking-card input,
+.booking-card select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d8e3ef;
+  border-radius: 9px;
+  background: #f8fbff;
+  color: #253b50;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.booking-card input:focus,
+.booking-card select:focus {
+  border-color: #078394;
+  box-shadow: 0 0 0 3px rgba(7, 131, 148, 0.10);
+}
+
+.doctor-info {
+  padding: 15px;
+  background: #eef8fa;
+  border-radius: 10px;
+  color: #24445e;
+}
+
+.doctor-info strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.doctor-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.booking-card button {
+  margin-top: 15px;
+  padding: 16px;
+  border: none;
+  border-radius: 9px;
+  background: #078394;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.booking-card button:hover {
+  background: #056b79;
+}
+
+.booking-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.booking-success,
+.booking-error {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 9px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.booking-success {
+  color: #176b3a;
+  background: #e5f7eb;
+}
+
+.booking-error {
+  color: #c62828;
+  background: #fdeaea;
+}
+
+@media (max-width: 600px) {
+  .booking-section {
+    padding: 35px 15px;
+  }
+
+  .booking-card {
+    padding: 25px 20px;
+  }
+
+  .booking-card h2 {
+    font-size: 25px;
+  }
+}

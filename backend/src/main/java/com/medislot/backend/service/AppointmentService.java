@@ -5,6 +5,7 @@ import com.medislot.backend.algorithm.BipartiteMatchingAlgorithm;
 import com.medislot.backend.dto.AppointmentRequest;
 import com.medislot.backend.model.Appointment;
 import com.medislot.backend.model.Doctor;
+import com.medislot.backend.model.Patient;
 import com.medislot.backend.repository.AppointmentRepository;
 import com.medislot.backend.repository.DoctorRepository;
 import com.medislot.backend.repository.PatientRepository;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AppointmentService {
@@ -74,11 +74,11 @@ public class AppointmentService {
             );
         }
 
-        if (patientRepository.findById(request.getPatientId()).isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Patient not found. Please register first."
-            );
-        }
+        Patient patient = patientRepository
+                .findById(request.getPatientId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Patient not found. Please register first."
+                ));
 
         List<Doctor> matchingDoctors = doctorRepository.findAll()
                 .stream()
@@ -139,7 +139,7 @@ public class AppointmentService {
                 Appointment appointment = new Appointment(
                         null,
                         request.getPatientId(),
-                        null,
+                        patient.getName(),
                         doctor.getId(),
                         doctor.getName(),
                         request.getAppointmentDate(),
