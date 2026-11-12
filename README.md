@@ -1,10 +1,12 @@
 \# MediSlot
 
+
+
 \### Smart Healthcare Appointment Scheduling System
 
 
 
-A web-based application that simplifies doctor discovery, appointment booking, and patient appointment management using modern web technologies and advanced algorithms.
+MediSlot is a web-based healthcare appointment scheduling platform that enables patients to discover doctors, book appointments, manage appointment history, and cancel appointments. The project demonstrates the practical application of advanced algorithms in healthcare appointment management.
 
 
 
@@ -18,85 +20,61 @@ A web-based application that simplifies doctor discovery, appointment booking, a
 
 <table>
 
-<tr>
+&#x20; <tr>
 
-<td align="center" width="50%">
+&#x20;   <td align="center" width="50%">
 
+&#x20;     <h3>Frontend</h3>
 
+&#x20;     <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge\&logo=react\&logoColor=black" alt="React"/>
 
-\### Frontend
+&#x20;     <br/><br/>
 
+&#x20;     <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge\&logo=vite\&logoColor=white" alt="Vite"/>
 
+&#x20;   </td>
 
-<img src="https://img.shields.io/badge/React-2026-61DAFB?style=for-the-badge\&logo=react\&logoColor=black" />
+&#x20;   <td align="center" width="50%">
 
+&#x20;     <h3>Backend</h3>
 
+&#x20;     <img src="https://img.shields.io/badge/Java\_17-ED8B00?style=for-the-badge\&logo=openjdk\&logoColor=white" alt="Java 17"/>
 
-<img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge\&logo=vite\&logoColor=white" />
+&#x20;     <br/><br/>
 
+&#x20;     <img src="https://img.shields.io/badge/Spring\_Boot-6DB33F?style=for-the-badge\&logo=springboot\&logoColor=white" alt="Spring Boot"/>
 
+&#x20;   </td>
 
-</td>
+&#x20; </tr>
 
-<td align="center" width="50%">
+&#x20; <tr>
 
+&#x20;   <td align="center">
 
+&#x20;     <h3>Testing and Build</h3>
 
-\### Backend
+&#x20;     <img src="https://img.shields.io/badge/JUnit-25A162?style=for-the-badge\&logo=junit5\&logoColor=white" alt="JUnit"/>
 
+&#x20;     <br/><br/>
 
+&#x20;     <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge\&logo=apachemaven\&logoColor=white" alt="Maven"/>
 
-<img src="https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge\&logo=openjdk\&logoColor=white" />
+&#x20;   </td>
 
+&#x20;   <td align="center">
 
+&#x20;     <h3>Version Control</h3>
 
-<img src="https://img.shields.io/badge/Spring\_Boot-6DB33F?style=for-the-badge\&logo=springboot\&logoColor=white" />
+&#x20;     <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge\&logo=git\&logoColor=white" alt="Git"/>
 
+&#x20;     <br/><br/>
 
+&#x20;     <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge\&logo=github\&logoColor=white" alt="GitHub"/>
 
-</td>
+&#x20;   </td>
 
-</tr>
-
-<tr>
-
-<td align="center">
-
-
-
-\### Testing and Build
-
-
-
-<img src="https://img.shields.io/badge/JUnit-25A162?style=for-the-badge\&logo=junit5\&logoColor=white" />
-
-
-
-<img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge\&logo=apachemaven\&logoColor=white" />
-
-
-
-</td>
-
-<td align="center">
-
-
-
-\### Version Control
-
-
-
-<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge\&logo=git\&logoColor=white" />
-
-
-
-<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge\&logo=github\&logoColor=white" />
-
-
-
-</td>
-
-</tr>
+&#x20; </tr>
 
 </table>
 
@@ -110,73 +88,27 @@ A web-based application that simplifies doctor discovery, appointment booking, a
 
 
 
-MediSlot provides a centralized platform where patients can register, explore doctors, book appointments, view appointment history, and cancel confirmed appointments.
+The application provides a centralized platform for patients to:
 
 
 
-The project also demonstrates the application of advanced algorithms to appointment allocation and preliminary email membership screening.
+\- Register and manage patient information.
+
+\- Browse doctors by specialization.
+
+\- Book appointments.
+
+\- View appointment history.
+
+\- Cancel confirmed appointments.
 
 
 
-\## Key Features
+It also incorporates algorithmic techniques for appointment allocation and preliminary email membership screening.
 
 
 
-\- Patient registration and management.
-
-\- Doctor listing by specialization.
-
-\- Appointment booking.
-
-\- Patient appointment history.
-
-\- Appointment cancellation.
-
-\- Algorithm-based appointment allocation.
-
-\- Bloom Filter-based email membership screening.
-
-
-
-\## System Architecture
-
-
-
-```mermaid
-
-flowchart TD
-
-&#x20;   A\[Patient] --> B\[React Frontend]
-
-&#x20;   B -->|REST API Requests| C\[Spring Boot Backend]
-
-
-
-&#x20;   C --> D\[Patient Management]
-
-&#x20;   C --> E\[Appointment Management]
-
-
-
-&#x20;   E --> F\[Bipartite Matching]
-
-&#x20;   D --> G\[Bloom Filter]
-
-
-
-&#x20;   D --> H\[API Response]
-
-&#x20;   E --> H
-
-&#x20;   H --> B
-
-&#x20;   B --> I\[Patient Interface]
-
-```
-
-
-
-\## Advanced Algorithms
+\## Key Algorithms
 
 
 
@@ -188,9 +120,9 @@ Uses a DFS-based augmenting path approach to find maximum matching between appoi
 
 
 
-\- Time Complexity: `O(V × E)`
+\- \*\*Time Complexity:\*\* O(V × E)
 
-\- Space Complexity: `O(V + E)`
+\- \*\*Space Complexity:\*\* O(V + E)
 
 
 
@@ -198,15 +130,63 @@ Uses a DFS-based augmenting path approach to find maximum matching between appoi
 
 
 
-A probabilistic data structure used for preliminary email membership screening. Positive results are verified through an exact repository lookup because Bloom Filters can produce false positives.
+A probabilistic data structure used for preliminary email membership screening. Positive results are checked against the exact repository because Bloom Filters can produce false positives.
 
 
 
-\- Insertion: `O(k)`
+\- \*\*Insertion:\*\* O(k)
 
-\- Lookup: `O(k)`
+\- \*\*Lookup:\*\* O(k)
 
-\- Space: `O(m)` bits
+\- \*\*Space:\*\* O(m) bits
+
+
+
+\## System Architecture
+
+
+
+```mermaid
+
+flowchart TB
+
+&#x20;   A\["Patient"] --> B\["React Frontend"]
+
+&#x20;   B <-->|"REST API"| C\["Spring Boot Backend"]
+
+&#x20;   C --> D\["Patient Management"]
+
+&#x20;   C --> E\["Appointment Management"]
+
+&#x20;   D --> F\["Bloom Filter"]
+
+&#x20;   E --> G\["Bipartite Matching"]
+
+&#x20;   D --> H\["API Response"]
+
+&#x20;   E --> H
+
+&#x20;   H --> B
+
+
+
+&#x20;   style A fill:#e0f2fe,stroke:#0284c7,color:#0f172a
+
+&#x20;   style B fill:#dbeafe,stroke:#2563eb,color:#0f172a
+
+&#x20;   style C fill:#dcfce7,stroke:#16a34a,color:#0f172a
+
+&#x20;   style D fill:#fef3c7,stroke:#d97706,color:#0f172a
+
+&#x20;   style E fill:#fef3c7,stroke:#d97706,color:#0f172a
+
+&#x20;   style F fill:#f3e8ff,stroke:#9333ea,color:#0f172a
+
+&#x20;   style G fill:#f3e8ff,stroke:#9333ea,color:#0f172a
+
+&#x20;   style H fill:#e0e7ff,stroke:#6366f1,color:#0f172a
+
+```
 
 
 
@@ -217,6 +197,8 @@ A probabilistic data structure used for preliminary email membership screening. 
 ```text
 
 MediSlot/
+
+│
 
 ├── backend/
 
@@ -264,11 +246,21 @@ MediSlot/
 
 
 
-\*\*Prerequisites:\*\* Java 17+, Maven, Node.js, npm, and Git.
+\### Prerequisites
 
 
 
-Clone the repository:
+\- Java 17 or later
+
+\- Maven
+
+\- Node.js and npm
+
+\- Git
+
+
+
+\### Clone the Repository
 
 
 
@@ -282,7 +274,7 @@ cd MediSlot
 
 
 
-Install backend dependencies:
+\### Backend Setup
 
 
 
@@ -296,7 +288,11 @@ mvn clean install
 
 
 
-Install frontend dependencies in a separate terminal:
+\### Frontend Setup
+
+
+
+Open a separate terminal:
 
 
 
@@ -314,7 +310,7 @@ npm install
 
 
 
-\*\*Backend:\*\*
+Run the backend:
 
 
 
@@ -328,11 +324,11 @@ mvn spring-boot:run
 
 
 
-Backend: `http://localhost:8081`
+Backend URL: `http://localhost:8081`
 
 
 
-\*\*Frontend:\*\*
+Run the frontend in a second terminal:
 
 
 
@@ -346,7 +342,7 @@ npm run dev
 
 
 
-Frontend: `http://localhost:5173`
+Frontend URL: `http://localhost:5173`
 
 
 
@@ -358,7 +354,7 @@ Frontend: `http://localhost:5173`
 
 |---|---|---|
 
-| POST | `/api/patients/register` | Register patient |
+| POST | `/api/patients/register` | Register a patient |
 
 | GET | `/api/patients` | Retrieve patients |
 
@@ -366,11 +362,11 @@ Frontend: `http://localhost:5173`
 
 | GET | `/api/appointments/doctors` | Retrieve doctors |
 
-| POST | `/api/appointments/book` | Book appointment |
+| POST | `/api/appointments/book` | Book an appointment |
 
-| GET | `/api/appointments/patient/{patientId}` | Patient appointment history |
+| GET | `/api/appointments/patient/{patientId}` | Retrieve patient appointments |
 
-| PATCH | `/api/appointments/{id}/cancel` | Cancel appointment |
+| PATCH | `/api/appointments/{id}/cancel` | Cancel an appointment |
 
 
 
@@ -378,7 +374,7 @@ Frontend: `http://localhost:5173`
 
 
 
-Run the backend test suite:
+Execute the backend test suite:
 
 
 
@@ -396,7 +392,7 @@ Recorded test results:
 
 
 
-| Test Suite | Passed |
+| Test Suite | Tests Passed |
 
 |---|---:|
 
@@ -416,7 +412,7 @@ Recorded test results:
 
 
 
-| Input Size | Algorithm | Time (ms) | Matched |
+| Input Size | Algorithm | Average Time (ms) | Matched |
 
 |---:|---|---:|---:|
 
@@ -438,7 +434,7 @@ Recorded test results:
 
 
 
-| Input Size | Method | Time (ms) |
+| Input Size | Lookup Method | Average Time (ms) |
 
 |---:|---|---:|
 
@@ -456,7 +452,11 @@ Recorded test results:
 
 
 
-These are local experimental results. Bipartite Matching achieved more matches in the tested cases, while Greedy was faster. Direct HashSet lookup was faster than Bloom Filter screening followed by an exact check in this benchmark.
+The recorded experiments show that Bipartite Matching achieved more matches than Greedy in the tested cases, while Greedy was faster. Direct HashSet lookup was faster than Bloom Filter screening followed by an exact check in the Bloom benchmark.
+
+
+
+These results are specific to the local test environment and workload.
 
 
 
@@ -482,41 +482,31 @@ These are local experimental results. Bipartite Matching achieved more matches i
 
 
 
-\*\*Soha Patel\*\*
+| Team Member | Contributions |
 
-\- Patient-facing frontend functionality.
+|---|---|
 
-\- Appointment history and cancellation interface.
+| Soha Patel | Patient-facing frontend, appointment history, cancellation interface, Bloom Filter implementation and integration, algorithm documentation |
 
-\- Bloom Filter implementation and integration.
-
-\- Algorithm analysis documentation.
+| Tanishka Shukla | Bipartite Matching, algorithm testing and benchmarking, Bloom Filter tests and benchmarking, technical documentation |
 
 
 
-\*\*Tanishka Shukla\*\*
-
-\- Bipartite Matching algorithm work.
-
-\- Algorithm testing and benchmarking.
-
-\- Bloom Filter unit testing and benchmarking.
-
-\- Technical project documentation.
+\## Project Documentation
 
 
 
-\## Documentation
+| Document | Description |
 
+|---|---|
 
+| \[Project Proposal](reports/Project\_Proposal.md) | Project objectives, scope and expected outcomes |
 
-\- \[Project Proposal](reports/Project\_Proposal.md)
+| \[Technical Project Report](reports/Technical\_Project\_Report.md) | Implementation and technical details |
 
-\- \[Technical Project Report](reports/Technical\_Project\_Report.md)
+| \[Algorithm Analysis](docs/Algorithm\_Analysis.md) | Complexity and performance analysis |
 
-\- \[Algorithm Analysis](docs/Algorithm\_Analysis.md)
-
-\- \[Screenshot Evidence](reports/screenshots/README.md)
+| \[Screenshot Documentation](reports/screenshots/README.md) | Demonstration and testing evidence |
 
 
 
@@ -524,17 +514,9 @@ These are local experimental results. Bipartite Matching achieved more matches i
 
 
 
-<div align="center">
-
-
-
 \*\*MediSlot — Smart Healthcare Appointment Scheduling System\*\*
 
 
 
-Advanced Algorithm Project
-
-
-
-</div>
+\*Advanced Algorithm Project\*
 
