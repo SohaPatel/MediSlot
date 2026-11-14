@@ -1,13 +1,15 @@
+
 import { useState } from 'react';
 import './PatientRegistration.css';
 
-function PatientRegistration() {
+function PatientRegistration({ onRegistered, onBackToLogin }) {
 
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
-        age: ''
+        age: '',
+        password: ''
     });
 
     const [message, setMessage] = useState('');
@@ -46,17 +48,24 @@ function PatientRegistration() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'Registration failed');
+                throw new Error(
+                    data.message || 'Registration failed'
+                );
             }
 
-            setMessage('Patient registered successfully!');
+            setMessage('Registration successful! Please login.');
 
             setFormData({
                 name: '',
                 email: '',
                 phone: '',
-                age: ''
+                age: '',
+                password: ''
             });
+
+            if (onRegistered) {
+                onRegistered();
+            }
 
         } catch (err) {
             setError(err.message || 'Unable to connect to server');
@@ -70,9 +79,9 @@ function PatientRegistration() {
 
             <div className="registration-card">
 
-                <h2>Patient Registration</h2>
+                <h2>Create Your Account</h2>
 
-                <p>Enter your details to register with MediSlot.</p>
+                <p>Register with MediSlot to manage your appointments.</p>
 
                 <form onSubmit={handleSubmit}>
 
@@ -118,8 +127,19 @@ function PatientRegistration() {
                         required
                     />
 
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Create Password (minimum 8 characters)"
+                        value={formData.password}
+                        onChange={handleChange}
+                        minLength="8"
+                        maxLength="72"
+                        required
+                    />
+
                     <button type="submit" disabled={loading}>
-                        {loading ? 'Registering...' : 'Register Now'}
+                        {loading ? 'Registering...' : 'Create Account'}
                     </button>
 
                 </form>
@@ -135,6 +155,17 @@ function PatientRegistration() {
                         {error}
                     </div>
                 )}
+
+                <p>
+                    Already have an account?{' '}
+                    <button
+                        type="button"
+                        onClick={onBackToLogin}
+                        className="login-link"
+                    >
+                        Login
+                    </button>
+                </p>
 
             </div>
 

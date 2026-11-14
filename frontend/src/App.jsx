@@ -2,37 +2,48 @@
 import { useState } from 'react';
 import './App.css';
 import PatientRegistration from './PatientRegistration';
+import PatientLogin from './PatientLogin';
 import AppointmentBooking from './AppointmentBooking';
 import PatientAppointments from './PatientAppointments';
 
 function App() {
-  const [showRegistration, setShowRegistration] = useState(false);
-  const [showBooking, setShowBooking] = useState(false);
-  const [showAppointments, setShowAppointments] = useState(false);
+  const [currentPage, setCurrentPage] = useState('login');
+  const [patient, setPatient] = useState(null);
 
-  const showHome = () => {
-    setShowRegistration(false);
-    setShowBooking(false);
-    setShowAppointments(false);
+  const handleLogin = (patientData) => {
+    setPatient(patientData);
+    setCurrentPage('home');
   };
 
-  const openRegistration = () => {
-    setShowRegistration(true);
-    setShowBooking(false);
-    setShowAppointments(false);
+  const handleLogout = () => {
+    setPatient(null);
+    setCurrentPage('login');
   };
 
-  const openBooking = () => {
-    setShowBooking(true);
-    setShowRegistration(false);
-    setShowAppointments(false);
-  };
+  const showHome = () => setCurrentPage('home');
+  const openRegistration = () => setCurrentPage('signup');
+  const openLogin = () => setCurrentPage('login');
+  const openBooking = () => setCurrentPage('booking');
+  const openAppointments = () => setCurrentPage('appointments');
 
-  const openAppointments = () => {
-    setShowAppointments(true);
-    setShowRegistration(false);
-    setShowBooking(false);
-  };
+  // Login screen
+  if (!patient) {
+    return (
+      <div className="app">
+        {currentPage === 'signup' ? (
+          <PatientRegistration
+            onRegistered={openLogin}
+            onBackToLogin={openLogin}
+          />
+        ) : (
+          <PatientLogin
+            onLogin={handleLogin}
+            onSignup={openRegistration}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -59,46 +70,28 @@ function App() {
         </div>
 
         <div className="nav-buttons">
-          <button
-            className="login-btn"
-            onClick={openRegistration}
-          >
-            Login
-          </button>
-
-          <button
-            className="signup-btn"
-            onClick={openRegistration}
-          >
-            Sign Up
+          <span>Welcome, {patient.name}</span>
+          <button className="login-btn" onClick={handleLogout}>
+            Logout
           </button>
         </div>
       </nav>
 
-      {/* Patient Registration */}
-      {showRegistration ? (
+      {currentPage === 'booking' ? (
 
-        <PatientRegistration />
-
-      ) : showBooking ? (
-
-        /* Appointment Booking */
         <div id="booking">
-          <AppointmentBooking patientId={1} />
+          <AppointmentBooking patientId={patient.id} />
         </div>
 
-      ) : showAppointments ? (
+      ) : currentPage === 'appointments' ? (
 
-        /* Patient Appointment History */
         <div id="appointments">
-          <PatientAppointments patientId={1} />
+          <PatientAppointments patientId={patient.id} />
         </div>
 
       ) : (
 
-        /* Homepage */
         <>
-
           {/* Hero Section */}
           <section className="hero" id="home">
 
@@ -286,7 +279,6 @@ function App() {
             </p>
 
           </footer>
-
         </>
       )}
 

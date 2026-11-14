@@ -100,3 +100,17 @@
         font-size: 24px;
     }
 }
+
+.login-link {
+    background: none;
+    border: none;
+    color: #2563eb;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0;
+    font-size: inherit;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
