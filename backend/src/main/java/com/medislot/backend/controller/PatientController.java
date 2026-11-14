@@ -1,5 +1,7 @@
+
 package com.medislot.backend.controller;
 
+import com.medislot.backend.dto.PatientLoginRequest;
 import com.medislot.backend.dto.PatientRegistrationRequest;
 import com.medislot.backend.model.Patient;
 import com.medislot.backend.service.PatientService;
@@ -33,10 +35,22 @@ public class PatientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(patient);
     }
 
+    // Login an existing patient
+    @PostMapping("/login")
+    public ResponseEntity<Patient> loginPatient(
+            @Valid @RequestBody PatientLoginRequest request) {
+
+        Patient patient = patientService.loginPatient(
+                request.getEmail(),
+                request.getPassword()
+        );
+
+        return ResponseEntity.ok(patient);
+    }
+
     // Get all registered patients
     @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
-
         return ResponseEntity.ok(patientService.getAllPatients());
     }
 }

@@ -1,3 +1,4 @@
+
 package com.medislot.backend.dto;
 
 import jakarta.validation.constraints.Email;
@@ -10,7 +11,7 @@ import jakarta.validation.constraints.Size;
 public class PatientRegistrationRequest {
 
     @NotBlank(message = "Name is required")
-    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    @Size(min = 2, max = 100)
     private String name;
 
     @NotBlank(message = "Email is required")
@@ -18,12 +19,16 @@ public class PatientRegistrationRequest {
     private String email;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must contain exactly 10 digits")
+    @Pattern(regexp = "^[0-9]{10}$")
     private String phone;
 
-    @Min(value = 1, message = "Age must be at least 1")
-    @Max(value = 120, message = "Age cannot exceed 120")
+    @Min(value = 1)
+    @Max(value = 120)
     private Integer age;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, max = 72, message = "Password must be between 8 and 72 characters")
+    private String password;
 
     public PatientRegistrationRequest() {
     }
@@ -58,5 +63,13 @@ public class PatientRegistrationRequest {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

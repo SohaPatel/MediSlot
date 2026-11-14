@@ -8,6 +8,7 @@ import com.medislot.backend.repository.PatientRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -16,6 +17,9 @@ import java.util.List;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder =
+            new BCryptPasswordEncoder();
 
     // Bloom Filter for quick email membership checks
     private final BloomFilter emailBloomFilter =
@@ -63,12 +67,41 @@ public class PatientService {
                 request.getAge()
         );
 
+        // Hash password before saving
+        patient.setPasswordHash(
+                passwordEncoder.encode(request.getPassword())
+        );
+
         Patient savedPatient = patientRepository.save(patient);
 
         // Add email only after successful registration
         emailBloomFilter.add(email);
 
         return savedPatient;
+    }
+
+    public Patient loginPatient(String email, String password) {
+
+        Patient patient = patientRepository
+                .findByEmail(email.trim().toLowerCase())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid email or password"
+                ));
+
+        if (patient.getPasswordHash() == null ||
+                !passwordEncoder.matches(
+                        password,
+                        patient.getPasswordHash()
+                )) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid email or password"
+            );
+        }
+
+        return patient;
     }
 
     public List<Patient> getAllPatients() {

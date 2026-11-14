@@ -1,6 +1,8 @@
+
 package com.medislot.backend.model;
 
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Patient {
 
@@ -10,6 +12,9 @@ public class Patient {
     private String phone;
     private Integer age;
     private LocalDateTime registeredAt;
+
+    @JsonIgnore
+    private String passwordHash;
 
     public Patient() {
     }
@@ -48,6 +53,11 @@ public class Patient {
         return registeredAt;
     }
 
+    @JsonIgnore
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -70,5 +80,10 @@ public class Patient {
 
     public void setRegisteredAt(LocalDateTime registeredAt) {
         this.registeredAt = registeredAt;
+    }
+
+    @JsonIgnore
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 }
