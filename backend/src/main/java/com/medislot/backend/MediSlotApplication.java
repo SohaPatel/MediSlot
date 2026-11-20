@@ -35,7 +35,7 @@ public class MediSlotApplication {
                         "http://127.0.0.1:*"
                     )
                     .allowedMethods(
-                        "GET", "POST", "PUT", "DELETE", "OPTIONS"
+                        "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
                     )
                     .allowedHeaders("*");
             }

@@ -2,41 +2,30 @@
 package com.medislot.backend.repository;
 
 import com.medislot.backend.model.Patient;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class PatientRepository {
 
-    private final ConcurrentHashMap<Long, Patient> patients =
-            new ConcurrentHashMap<>();
+    private final JpaPatientStore store;
 
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    public PatientRepository(JpaPatientStore store) { this.store = store; }
 
     public Patient save(Patient patient) {
-        Long id = idGenerator.getAndIncrement();
-        patient.setId(id);
-        patients.put(id, patient);
-        return patient;
+        return store.save(patient);
     }
 
     public Optional<Patient> findById(Long id) {
-        return Optional.ofNullable(patients.get(id));
+        return store.findById(id);
     }
 
     public Optional<Patient> findByEmail(String email) {
-        return patients.values()
-                .stream()
-                .filter(patient -> patient.getEmail().equalsIgnoreCase(email))
-                .findFirst();
+        return store.findByEmailIgnoreCase(email);
     }
 
     public List<Patient> findAll() {
-        return new ArrayList<>(patients.values());
+        return store.findAll();
     }
 }

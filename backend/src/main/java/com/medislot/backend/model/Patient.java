@@ -3,18 +3,37 @@ package com.medislot.backend.model;
 
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "patients", uniqueConstraints = @UniqueConstraint(name = "uk_patients_email", columnNames = "email"))
 public class Patient {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(nullable = false, length = 254)
     private String email;
+
+    @Column(nullable = false, length = 20)
     private String phone;
+
+    @Column
     private Integer age;
+
+    @Column(nullable = false)
     private LocalDateTime registeredAt;
 
     @JsonIgnore
+    @Column(nullable = false)
     private String passwordHash;
+
+    @Column(nullable = false)
+    private boolean active = true;
 
     public Patient() {
     }
@@ -52,6 +71,9 @@ public class Patient {
     public LocalDateTime getRegisteredAt() {
         return registeredAt;
     }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 
     @JsonIgnore
     public String getPasswordHash() {

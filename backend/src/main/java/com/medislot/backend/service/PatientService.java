@@ -4,7 +4,11 @@ package com.medislot.backend.service;
 import com.medislot.backend.algorithm.BloomFilter;
 import com.medislot.backend.dto.PatientRegistrationRequest;
 import com.medislot.backend.model.Patient;
+import com.medislot.backend.model.MedicalHistoryEntry;
 import com.medislot.backend.repository.PatientRepository;
+import com.medislot.backend.repository.MedicalHistoryRepository;
+import com.medislot.backend.dto.MedicalHistoryRequest;
+import com.medislot.backend.dto.PatientProfileUpdateRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
@@ -17,6 +21,7 @@ import java.util.List;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final MedicalHistoryRepository historyRepository;
 
     private final BCryptPasswordEncoder passwordEncoder =
             new BCryptPasswordEncoder();
@@ -25,9 +30,10 @@ public class PatientService {
     private final BloomFilter emailBloomFilter =
             new BloomFilter(10000, 5);
 
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientRepository patientRepository, MedicalHistoryRepository historyRepository) {
 
         this.patientRepository = patientRepository;
+        this.historyRepository = historyRepository;
 
         // Load already registered emails into the Bloom Filter
         List<Patient> existingPatients = patientRepository.findAll();
@@ -89,6 +95,8 @@ public class PatientService {
                         "Invalid email or password"
                 ));
 
+        if (!patient.isActive()) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+
         if (patient.getPasswordHash() == null ||
                 !passwordEncoder.matches(
                         password,
@@ -106,5 +114,25 @@ public class PatientService {
 
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
+    }
+
+    public Patient getByEmail(String email) {
+        return patientRepository.findByEmail(email).filter(Patient::isActive).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    public Patient updateProfile(String email, PatientProfileUpdateRequest update) {
+        Patient patient = getByEmail(email);
+        patient.setName(update.name().trim());
+        patient.setPhone(update.phone().trim());
+        patient.setAge(update.age());
+        return patientRepository.save(patient);
+    }
+
+    public List<MedicalHistoryEntry> getMedicalHistory(String email) {
+        return historyRepository.findByPatient_IdOrderByCreatedAtDesc(getByEmail(email).getId());
+    }
+
+    public MedicalHistoryEntry addMedicalHistory(String email, MedicalHistoryRequest request) {
+        return historyRepository.save(new MedicalHistoryEntry(getByEmail(email), request.title().trim(), request.details().trim(), request.allergies() == null ? null : request.allergies().trim()));
     }
 }
