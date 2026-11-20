@@ -134,9 +134,42 @@ cd MediSlot
 
 ### Backend Setup
 
+The backend now uses MySQL with Flyway migrations. Start a local MySQL 8.4
+instance with Docker Compose:
+
+```bash
+cp .env.example .env
+# Edit .env and set strong local passwords before starting the database.
+docker compose up -d mysql
+```
+
+Set `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET` (at least 32 random
+bytes), and optionally `JWT_EXPIRATION_MS` in the backend process environment.
+`backend/.env.example` lists the supported names. Do not commit real secrets.
+The first backend start applies `backend/src/main/resources/db/migration` and
+seeds the original doctor directory if it is empty.
+
+For PowerShell, set the backend variables in the terminal that will run Maven:
+
+```powershell
+$env:DB_URL = "jdbc:mysql://localhost:3306/medislot?serverTimezone=UTC"
+$env:DB_USERNAME = "medislot"
+$env:DB_PASSWORD = "the same DB_PASSWORD used by Docker Compose"
+$env:JWT_SECRET = "a locally generated secret of at least 32 bytes"
+$env:DOCTOR_REGISTRATION_CODE = "a private doctor onboarding code"
+$env:ADMIN_EMAIL = "admin@example.local"
+$env:ADMIN_PASSWORD = "a strong admin password"
+```
+
+The first startup seeds the configured administrator account with a BCrypt
+password hash. Doctor self-registration is gated by `DOCTOR_REGISTRATION_CODE`;
+an administrator can also provision an inactive doctor profile for the doctor
+to claim with that code.
+
 ```bash
 cd backend
-mvn clean install
+mvn clean test
+mvn spring-boot:run
 ```
 
 ### Frontend Setup
@@ -181,6 +214,28 @@ Frontend URL: `http://localhost:5173`
 | POST | `/api/appointments/book` | Book an appointment |
 | GET | `/api/appointments/patient/{patientId}` | Retrieve patient appointment history |
 | PATCH | `/api/appointments/{id}/cancel` | Cancel an appointment |
+| PATCH | `/api/appointments/{id}/reschedule` | Reschedule an appointment |
+| GET | `/api/appointments/{id}/confirmation.pdf` | Download an appointment confirmation |
+| GET | `/api/appointments/recommendations` | Rank doctors for a requested specialty and slot |
+| GET | `/api/appointments/search-suggestions?prefix=...` | Trie-based doctor and specialty suggestions |
+| GET | `/api/appointments/search/date?date=YYYY-MM-DD` | Search the authenticated patient's appointments by date |
+| POST/GET | `/api/appointments/waiting-list` | Join or view the patient's waiting-list entries |
+| GET/PUT | `/api/patients/me` | View or update the authenticated patient's profile |
+| GET/POST | `/api/patients/me/medical-history` | View or add the patient's private history |
+| POST | `/api/doctors/register` | Register/claim a doctor account with onboarding code |
+| POST | `/api/doctors/login` | Doctor login and JWT issuance |
+| GET/PUT | `/api/doctors/me` | View or update doctor profile |
+| PUT | `/api/doctors/me/availability` | Replace recurring available times |
+| PUT | `/api/doctors/me/blocked-dates` | Set unavailable dates |
+| GET | `/api/doctors/me/appointments` | View doctor-owned appointments by range |
+| POST | `/api/admin/login` | Bootstrap-configured admin login |
+| GET | `/api/admin/dashboard` | Admin appointment and account counts |
+| GET | `/api/admin/analytics` | Historical daily, doctor, specialty, and peak-hour counts |
+
+Patient login returns `{ patient, token, role }`. Send the token as a Bearer
+token on protected API requests. The existing patient appointment listing and
+cancellation endpoints are scoped to the authenticated patient's account;
+administrative listing endpoints require the ADMIN role.
 
 ## 10. Testing
 
@@ -241,6 +296,7 @@ mvn clean test
 | Notifications | Email and SMS notifications |
 | Availability | Improved doctor availability management |
 | Deployment | Cloud-based deployment |
+| Platform | Doctor and admin accounts, clinical workflows, and remaining advanced modules |
 
 ## 13. Team Contributions
 

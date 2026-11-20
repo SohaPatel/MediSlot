@@ -3,48 +3,34 @@ package com.medislot.backend.repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.medislot.backend.model.Appointment;
 
 @Repository
 public class AppointmentRepository {
 
-    private final ConcurrentHashMap<Long, Appointment> appointments =
-            new ConcurrentHashMap<>();
+    private final JpaAppointmentStore store;
 
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    public AppointmentRepository(JpaAppointmentStore store) { this.store = store; }
 
     public synchronized Appointment save(Appointment appointment) {
 
-        boolean slotAlreadyBooked = appointments.values()
-                .stream()
-                .anyMatch(existing ->
-                        existing.getDoctorId().equals(appointment.getDoctorId())
-                        && existing.getAppointmentDate().equals(
-                                appointment.getAppointmentDate())
-                        && existing.getAppointmentTime().equals(
-                                appointment.getAppointmentTime())
-                        && !"CANCELLED".equals(existing.getStatus())
-                );
-
-        if (slotAlreadyBooked) {
+        if (existsByPatientIdAndDateAndTime(appointment.getPatientId(), appointment.getAppointmentDate(), appointment.getAppointmentTime())) {
+            throw new IllegalStateException("This patient already has an appointment at that time");
+        }
+        if (existsByDoctorIdAndDateAndTime(appointment.getDoctorId(), appointment.getAppointmentDate(), appointment.getAppointmentTime())) {
             throw new IllegalStateException(
                     "This doctor slot is already booked"
             );
         }
-
-        appointment.setId(idGenerator.getAndIncrement());
-        appointments.put(appointment.getId(), appointment);
-
-        return appointment;
+        try { return store.saveAndFlush(appointment); }
+        catch (DataIntegrityViolationException ex) { throw new IllegalStateException("This doctor slot is already booked", ex); }
     }
 
     public synchronized Appointment update(Appointment appointment) {
@@ -55,21 +41,12 @@ public class AppointmentRepository {
             );
         }
 
-        if (!appointments.containsKey(appointment.getId())) {
-            throw new IllegalArgumentException(
-                    "Appointment not found."
-            );
-        }
-
-        appointments.put(appointment.getId(), appointment);
-
-        return appointment;
+        return store.save(appointment);
     }
 
     public List<Appointment> findAll() {
 
-        List<Appointment> result =
-                new ArrayList<>(appointments.values());
+        List<Appointment> result = store.findAll();
 
         result.sort(Comparator.comparing(Appointment::getAppointmentDate)
                 .thenComparing(Appointment::getAppointmentTime));
@@ -78,33 +55,26 @@ public class AppointmentRepository {
     }
 
     public Optional<Appointment> findById(Long id) {
-        return Optional.ofNullable(appointments.get(id));
+        return store.findById(id);
     }
 
     public List<Appointment> findByPatientId(Long patientId) {
 
-        return appointments.values()
-                .stream()
-                .filter(a -> a.getPatientId().equals(patientId))
-                .toList();
+        return store.findByPatient_Id(patientId);
     }
 
     public List<Appointment> findByDate(LocalDate date) {
 
-        return appointments.values()
-                .stream()
-                .filter(a -> a.getAppointmentDate().equals(date))
-                .toList();
+        return store.findByAppointmentDate(date);
     }
 
     public boolean existsByPatientIdAndDateAndTime(
             Long patientId, LocalDate date, LocalTime time) {
 
-        return appointments.values().stream().anyMatch(a ->
-                a.getPatientId().equals(patientId)
-                && a.getAppointmentDate().equals(date)
-                && a.getAppointmentTime().equals(time)
-                && !"CANCELLED".equals(a.getStatus())
-        );
+        return store.existsByPatient_IdAndAppointmentDateAndAppointmentTimeAndStatusNot(patientId, date, time, "CANCELLED");
+    }
+
+    public boolean existsByDoctorIdAndDateAndTime(Long doctorId, LocalDate date, LocalTime time) {
+        return store.existsByDoctor_IdAndAppointmentDateAndAppointmentTimeAndStatusNot(doctorId, date, time, "CANCELLED");
     }
 }

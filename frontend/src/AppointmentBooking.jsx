@@ -10,6 +10,10 @@ function AppointmentBooking({ patientId = 1 }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [recommendations, setRecommendations] = useState([]);
+  const [waitlistMessage, setWaitlistMessage] = useState('');
+  const [doctorSearch, setDoctorSearch] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:8081/api/appointments/doctors')
@@ -20,6 +24,31 @@ function AppointmentBooking({ patientId = 1 }) {
       .then(data => setDoctors(data))
       .catch(() => setError('Could not load doctors. Please check the backend.'));
   }, []);
+
+  useEffect(() => {
+    if (!specialization || !appointmentDate || !preferredTime) {
+      setRecommendations([]);
+      return;
+    }
+    const params = new URLSearchParams({ specialization, date: appointmentDate, time: preferredTime });
+    fetch(`http://localhost:8081/api/appointments/recommendations?${params}`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('medislot_token') || ''}` }
+    }).then(response => response.ok ? response.json() : [])
+      .then(setRecommendations)
+      .catch(() => setRecommendations([]));
+  }, [specialization, appointmentDate, preferredTime]);
+
+  useEffect(() => {
+    if (doctorSearch.trim().length < 2) { setSearchSuggestions([]); return; }
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams({ prefix: doctorSearch.trim() });
+      fetch(`http://localhost:8081/api/appointments/search-suggestions?${params}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('medislot_token') || ''}` }
+      }).then(response => response.ok ? response.json() : [])
+        .then(setSearchSuggestions).catch(() => setSearchSuggestions([]));
+    }, 180);
+    return () => clearTimeout(timer);
+  }, [doctorSearch]);
 
   const specializations = [
     ...new Set(doctors.map(doctor => doctor.specialization))
@@ -51,7 +80,8 @@ function AppointmentBooking({ patientId = 1 }) {
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('medislot_token') || ''}`
           },
           body: JSON.stringify({
             patientId,
@@ -80,6 +110,25 @@ function AppointmentBooking({ patientId = 1 }) {
     }
   };
 
+  const joinWaitingList = async () => {
+    setWaitlistMessage('');
+    try {
+      const response = await fetch('http://localhost:8081/api/appointments/waiting-list', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('medislot_token') || ''}`
+        },
+        body: JSON.stringify({ specialization, appointmentDate, preferredTime: preferredTime || null })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Unable to join the waiting list.');
+      setWaitlistMessage('You joined the waiting list. Check your appointments for slot offers.');
+    } catch (err) {
+      setWaitlistMessage(err.message || 'Unable to join the waiting list.');
+    }
+  };
+
   const today = new Date().toLocaleDateString('en-CA');
 
   return (
@@ -94,6 +143,10 @@ function AppointmentBooking({ patientId = 1 }) {
         </p>
 
         <form onSubmit={handleBooking}>
+          <label htmlFor="doctorSearch">Search doctors or specializations</label>
+          <input id="doctorSearch" value={doctorSearch} onChange={event => setDoctorSearch(event.target.value)} list="doctorSearchSuggestions" placeholder="Start typing a name or specialty" />
+          <datalist id="doctorSearchSuggestions">{searchSuggestions.map(suggestion => <option key={suggestion} value={suggestion} />)}</datalist>
+
           <label htmlFor="specialization">Select Specialization</label>
 
           <select
@@ -110,6 +163,18 @@ function AppointmentBooking({ patientId = 1 }) {
               <option key={item} value={item}>{item}</option>
             ))}
           </select>
+
+          {recommendations.length > 0 && (
+            <div className="doctor-info" aria-live="polite">
+              <strong>Smart doctor recommendations</strong>
+              {recommendations.slice(0, 3).map(item => (
+                <p key={item.doctor.id}>
+                  {item.doctor.name} · {item.score}% match
+                  {item.reasons.length > 0 && <small> — {item.reasons.join('; ')}</small>}
+                </p>
+              ))}
+            </div>
+          )}
 
           {specialization && (
             <div className="doctor-info">
@@ -155,6 +220,10 @@ function AppointmentBooking({ patientId = 1 }) {
 
         {message && <div className="booking-success">{message}</div>}
         {error && <div className="booking-error">{error}</div>}
+        {error && specialization && appointmentDate && (
+          <button type="button" onClick={joinWaitingList}>Join waiting list</button>
+        )}
+        {waitlistMessage && <div className="booking-success" role="status">{waitlistMessage}</div>}
       </div>
     </section>
   );

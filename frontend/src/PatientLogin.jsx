@@ -45,7 +45,8 @@ function PatientLogin({ onLogin, onSignup }) {
                 );
             }
 
-            onLogin(data);
+            localStorage.setItem('medislot_token', data.token);
+            onLogin({ ...data.patient, role: data.role });
 
         } catch (err) {
             setError(err.message || 'Unable to connect to server');
@@ -103,6 +104,13 @@ function PatientLogin({ onLogin, onSignup }) {
                     >
                         Sign Up
                     </button>
+                </p>
+
+                <p>Are you a doctor?{' '}
+                    <button type="button" onClick={onDoctorLogin} className="login-link">Doctor sign in</button>
+                </p>
+                <p>Administrator?{' '}
+                    <button type="button" onClick={onAdminLogin} className="login-link">Admin sign in</button>
                 </p>
 
             </div>

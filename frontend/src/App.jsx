@@ -5,6 +5,9 @@ import PatientRegistration from './PatientRegistration';
 import PatientLogin from './PatientLogin';
 import AppointmentBooking from './AppointmentBooking';
 import PatientAppointments from './PatientAppointments';
+import PatientHealth from './PatientHealth';
+import DoctorPortal from './DoctorPortal';
+import AdminPortal from './AdminPortal';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('login');
@@ -16,6 +19,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('medislot_token');
     setPatient(null);
     setCurrentPage('login');
   };
@@ -23,6 +27,8 @@ function App() {
   const showHome = () => setCurrentPage('home');
   const openRegistration = () => setCurrentPage('signup');
   const openLogin = () => setCurrentPage('login');
+  const openDoctorLogin = () => setCurrentPage('doctor-login');
+  const openAdminLogin = () => setCurrentPage('admin-login');
   const openBooking = () => setCurrentPage('booking');
   const openAppointments = () => setCurrentPage('appointments');
 
@@ -30,7 +36,11 @@ function App() {
   if (!patient) {
     return (
       <div className="app">
-        {currentPage === 'signup' ? (
+        {currentPage === 'doctor-login' ? (
+          <DoctorPortal onLogin={handleLogin} />
+        ) : currentPage === 'admin-login' ? (
+          <AdminPortal onLogin={handleLogin} />
+        ) : currentPage === 'signup' ? (
           <PatientRegistration
             onRegistered={openLogin}
             onBackToLogin={openLogin}
@@ -39,10 +49,20 @@ function App() {
           <PatientLogin
             onLogin={handleLogin}
             onSignup={openRegistration}
+              onDoctorLogin={openDoctorLogin}
+              onAdminLogin={openAdminLogin}
           />
         )}
       </div>
     );
+  }
+
+  if (patient.role === 'DOCTOR') {
+    return <div className="app"><nav className="navbar"><div className="logo">✚ MediSlot Doctor</div><div className="nav-buttons"><span>Welcome, {patient.name}</span><button className="login-btn" onClick={handleLogout}>Logout</button></div></nav><DoctorPortal onLogin={handleLogin} /></div>;
+  }
+
+  if (patient.role === 'ADMIN') {
+    return <div className="app"><nav className="navbar"><div className="logo">✚ MediSlot Admin</div><div className="nav-buttons"><span>{patient.name}</span><button className="login-btn" onClick={handleLogout}>Logout</button></div></nav><AdminPortal onLogin={handleLogin} /></div>;
   }
 
   return (
@@ -67,6 +87,7 @@ function App() {
           <a href="#appointments" onClick={openAppointments}>
             My Appointments
           </a>
+          <a href="#health" onClick={() => setCurrentPage('health')}>My Health</a>
         </div>
 
         <div className="nav-buttons">
@@ -77,7 +98,9 @@ function App() {
         </div>
       </nav>
 
-      {currentPage === 'booking' ? (
+      {currentPage === 'health' ? (
+        <PatientHealth />
+      ) : currentPage === 'booking' ? (
 
         <div id="booking">
           <AppointmentBooking patientId={patient.id} />
